@@ -7,7 +7,6 @@ import java.awt.Graphics2D;
 import java.awt.geom.Rectangle2D;
 import javax.swing.JPanel;
 
-import wolves.Wolves;
 
 @SuppressWarnings("serial")
 public class WolvesUI extends JPanel {

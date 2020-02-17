@@ -1,5 +1,5 @@
 package wolves;
-
+/*
 public class HungryDumbWolf implements Wolf {
 
 	@Override
@@ -48,3 +48,4 @@ public class HungryDumbWolf implements Wolf {
 		return 0;
 	}
 }
+*/

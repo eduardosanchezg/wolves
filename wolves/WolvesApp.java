@@ -1,5 +1,6 @@
 package wolves;
 
+import lib.*;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Toolkit;
@@ -30,7 +31,7 @@ public class WolvesApp extends JFrame {
 		int top  = (screenSize.height - numbrows*squaresize)/ 2;
 		setLocation(left, top);
 		
-		game = new Wolves(numbrows, numbcols);
+		game = new Wolves(numbrows, numbcols,3,1,5,1);
 		
 		WolvesUI panel = new WolvesUI(game,squaresize);
 		add(panel, BorderLayout.CENTER);
