@@ -1,6 +1,4 @@
-package wolves;
 
-import org.javatuples.Triplet;
 
 import java.util.List;
 import java.util.Random;
@@ -17,7 +15,7 @@ public class RandomWolf implements Wolf {
 		return mymove;
 	}*/
 	
-	public int moveLim(int id, List<Triplet<Integer,Integer,Integer>> sight) {
+	public int moveLim(int id, List<int[]> sight) {
 		Random r = new Random();
 		return r.nextInt(4) + 1;
 	}

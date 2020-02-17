@@ -1,4 +1,3 @@
-package wolves;
 /*
 public class HungryDumbWolf implements Wolf {
 

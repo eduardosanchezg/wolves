@@ -1,6 +1,4 @@
-package wolves;
 
-import org.javatuples.Triplet;
 
 import java.util.List;
 
@@ -14,7 +12,7 @@ public interface Wolf {
 	*/
 
 
-	public abstract int moveLim(int i, List<Triplet<Integer,Integer,Integer>> sight);
+	public abstract int moveLim(int i, List<int[]> sight);
 	// returns 0 for No Movement, 1 for North, 2 for East, 3 for South, 4 for West
 	// Hence, no diagonal movement is possible
 }

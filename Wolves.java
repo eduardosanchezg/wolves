@@ -1,6 +1,4 @@
-package wolves;
 
-import org.javatuples.Triplet;
 
 import java.util.*;
 
@@ -12,7 +10,8 @@ public class Wolves {
 	private int numPreys;
 	private int visibility;
 	private int minCaptured;
-	private int[][] grid;
+	private int min_surround;
+	public int[][] grid;
 	private int rows, cols;
 	private int[] wolfRow = new int[numWolves];
 	private int[] wolfCol = new int[numWolves];
@@ -25,16 +24,24 @@ public class Wolves {
 	private WolvesUI visuals;
 	private long tickcounter = 0;
 
-	public Wolves(int rows, int cols, int numWolves, int numPreys, int visibility, int minCaptured) {
+	public Wolves(int rows, int cols, int numWolves, int numPreys, int visibility, int minCaptured, int min_surround) {
 		this.rows=rows;
 		this.cols=cols;
 		this.numWolves = numWolves;
 		this.numPreys = numPreys;
 		this.visibility = visibility;
 		this.minCaptured = minCaptured;
+		this.min_surround = min_surround;
 		grid = new int[rows][cols];
 
-		for (int i=0; i<numWolves; i++) {
+		wolfRow = new int[numWolves];
+		wolfCol = new int[numWolves];
+		preyRow = new int[numPreys];
+		preyCol = new int[numPreys];
+		wolves = new Wolf[numWolves];
+		lastMove = new int[numWolves];
+
+		for (int i=0; i< numWolves; i++) {
 			do {
 				wolfRow[i] = r.nextInt(rows);
 				wolfCol[i] = r.nextInt(cols);
@@ -70,9 +77,9 @@ public class Wolves {
 		wolvesPool[3] = new RandomWolf();
 		wolvesPool[4] = new RandomWolf();
 		// Below code will select three random wolves from the pool. 
-		// Make the pool as large as you want, but not < 3
+		// Make the pool as large as you want, but not < numWolves
 		Set<Integer> generated = new LinkedHashSet<Integer>();
-		while (generated.size() < 3)
+		while (generated.size() < numWolves)
 		{
 		    Integer next = r.nextInt(wolvesPool.length);
 		    generated.add(next);
@@ -84,7 +91,7 @@ public class Wolves {
 	}
 	
 	public void tick() {
-		int[][] moves = new int[3][2];
+		int[][] moves = new int[numWolves][2];
 
 		int cntr = 0;
 		for (int i = 0; i < numPreys; i++) {
@@ -116,13 +123,18 @@ public class Wolves {
 		}
 		*/
 		// Wolves can not move diagonally
-		for (int i = 0; i<numWolves; i++) {
+		for (int i = 0; i< numWolves; i++) {
 			safetyGrid = new int[grid.length][grid[0].length];
 			for (int r=0; r<grid.length; r++)
 				for (int s=0; s<grid[0].length; s++)
 					safetyGrid[r][s] = grid[r][s];
+
 			int dir = wolves[i].moveLim(i+1,getWolfView(i));
-			dir = (dir-1 + lastMove[i] - 1) % 4 + 1; //transform from relative to absolute directions
+
+			if (dir != 0) {
+				dir = (dir-1 + lastMove[i] - 1) % 4 + 1; //transform from relative to absolute directions}
+				lastMove[i] = dir;
+			}
 			switch (dir) {
 			 	case 0: moves[i][0] = 0; moves[i][1] = 0; break; 
 			 	case 1: moves[i][0] = -1; moves[i][1] = 0; break; 
@@ -139,7 +151,7 @@ public class Wolves {
 				grid[wolfRow[i]][wolfCol[i]] = 0;
 				wolfRow[i] = rowWrap(wolfRow[i],moves[i][0]);
 				wolfCol[i] = colWrap(wolfCol[i],moves[i][1]);
-				grid[wolfRow[i]][wolfCol[i]] = i+1;
+				grid[wolfRow[i]][wolfCol[i]] = i*2+1;
 			}
 		}
 		
@@ -172,7 +184,7 @@ public class Wolves {
 		if (grid[rowWrap(r,1)][colWrap(c,-1)]!=0) count++;
 		if (grid[rowWrap(r,1)][colWrap(c,0)]!=0) count++;
 		if (grid[rowWrap(r,1)][colWrap(c,1)]!=0) count++;	
-		return (count>=2);
+		return (count>=min_surround);
 	}
 	
 	public int rowWrap(int x, int inc) {
@@ -212,9 +224,9 @@ public class Wolves {
 		return Math.abs(x1-x0) + Math.abs(y1-y0);
 	}
 
-	public List<Triplet<Integer,Integer,Integer>> getWolfView(int wolf) {
-		List<Triplet<Integer,Integer,Integer>> agents = new ArrayList<>();
-		for(int i=0;i<=numWolves;i++){
+	public List<int[]> getWolfView(int wolf) {
+		List<int[]> agents = new ArrayList<>();
+		for(int i=0;i<numWolves;i++){
 			double angle = Math.toRadians(90*lastMove[wolf]);
 			int cos = (int) Math.cos(angle);
 			int sin = (int) Math.sin(angle);
@@ -222,7 +234,8 @@ public class Wolves {
 			int relY = wolfCol[wolf]-wolfCol[i];
 			int x = (relX * cos) - (relY * sin); // transformed according to last move (orientation of the wolf)
 			int y = (relX * sin) + (relY * cos);
-			Triplet<Integer,Integer,Integer> agent = Triplet.with(i*2+1,x,y);
+
+			int[] agent = new int[]{i*2+1,x,y};
 			agents.add(agent);
 		}
 		for (int i = 0; i < numPreys; i++) {
@@ -236,7 +249,7 @@ public class Wolves {
 			int relY = wolfCol[wolf]-preyCol[i];
 			int x = (relX * cos) - (relY * sin); // transformed according to last move (orientation of the wolf)
 			int y = (relX * sin) + (relY * cos);
-			Triplet<Integer,Integer,Integer> agent = Triplet.with(i*2+2,x,y);
+			int[] agent = new int[]{i*2+1,x,y};
 			agents.add(agent);
 		}
 

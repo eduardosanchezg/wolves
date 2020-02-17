@@ -1,5 +1,3 @@
-package wolves;
-
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -33,12 +31,16 @@ public class WolvesUI extends JPanel {
 		for (int i=0; i<game.getNumbCols(); i++)
 			for (int j=0; j<game.getNumbRows(); j++) 
 				if (game.isWolf(i,j)) {
+					System.out.println("wolf: " +  game.grid[i][j]);
 					g2.setColor(Color.DARK_GRAY);
 					g2.fill(new Rectangle2D.Double(i*squaresize+1,j*squaresize+1,squaresize-1,squaresize-1));
 				} else if (game.isPrey(i,j)) {
 					g2.setColor(Color.YELLOW);
+					System.out.println("Prey: " +  game.grid[i][j]);
 					g2.fill(new Rectangle2D.Double(i*squaresize+1,j*squaresize+1,squaresize-1,squaresize-1));
 				}
+
+		System.out.println("--------------");
 	}
 
 	public void drawgrid(Graphics2D g2) {
