@@ -28,7 +28,7 @@ public class WolvesApp extends JFrame {
 		int top  = (screenSize.height - numbrows*squaresize)/ 2;
 		setLocation(left, top);
 		
-		game = new Wolves(numbrows, numbcols,5,4,5,1, 1);
+		game = new Wolves(numbrows, numbcols,3,10,5,1, 2);
 		
 		WolvesUI panel = new WolvesUI(game,squaresize);
 		add(panel, BorderLayout.CENTER);
