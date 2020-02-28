@@ -10,9 +10,9 @@ public class CleverWolf implements Wolf {
     int currently_following = -1;
 
     @Override
-    public int[] moveAll(int i, List<int[]> sight) {
-		List<int[]> prey = extractPrey(sight);
-		List<int[]> wolves = extractWolves(sight);
+    public int[] moveAll(int i, List<int[]> wolvesSight, List<int[]> preysSight) { //TODO: update method with new changes
+		List<int[]> prey = extractPrey(preysSight);
+		List<int[]> wolves = extractWolves(wolvesSight);
 		if (prey.size() == 0) {
 			// wander around
             currently_following = -1;

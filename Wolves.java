@@ -115,7 +115,7 @@ public class Wolves {
 			for (int r=0; r<grid.length; r++)
 				for (int s=0; s<grid[0].length; s++)
 					safetyGrid[r][s] = grid[r][s];
-			moves[i] = wolves[i].moveAll(i+1, getWolfView(i));
+			moves[i] = wolves[i].moveAll(i+1, getWolfViewW(i), getWolfViewP(i));
 		}
 
 
@@ -188,14 +188,14 @@ public class Wolves {
 
     public boolean captured(int r, int c) {
         int count = 0;
-        if (grid[rowWrap(r, -1)][colWrap(c, -1)] != 0) count++;
-        if (grid[rowWrap(r, -1)][colWrap(c, 0)] != 0) count++;
-        if (grid[rowWrap(r, -1)][colWrap(c, 1)] != 0) count++;
-        if (grid[rowWrap(r, 0)][colWrap(c, -1)] != 0) count++;
-        if (grid[rowWrap(r, 0)][colWrap(c, 1)] != 0) count++;
-        if (grid[rowWrap(r, 1)][colWrap(c, -1)] != 0) count++;
-        if (grid[rowWrap(r, 1)][colWrap(c, 0)] != 0) count++;
-        if (grid[rowWrap(r, 1)][colWrap(c, 1)] != 0) count++;
+        if (grid[rowWrap(r, -1)][colWrap(c, -1)] % 2 == 1) count++;
+        if (grid[rowWrap(r, -1)][colWrap(c, 0)] % 2 == 1) count++;
+        if (grid[rowWrap(r, -1)][colWrap(c, 1)] % 2 == 1) count++;
+        if (grid[rowWrap(r, 0)][colWrap(c, -1)] % 2 == 1) count++;
+        if (grid[rowWrap(r, 0)][colWrap(c, 1)] % 2 == 1) count++;
+        if (grid[rowWrap(r, 1)][colWrap(c, -1)] % 2 == 1) count++;
+        if (grid[rowWrap(r, 1)][colWrap(c, 0)] % 2 == 1) count++;
+        if (grid[rowWrap(r, 1)][colWrap(c, 1)] % 2 == 1) count++;
         return (count >= min_surround);
     }
 
@@ -237,36 +237,51 @@ public class Wolves {
         return Math.abs(x1 - x0) + Math.abs(y1 - y0);
     }
 
-    public List<int[]> getWolfView(int wolf) {
-        List<int[]> agents = new ArrayList<>();
+    public List<int[]> getWolfViewW(int wolf) {
+        List<int[]> wolves = new ArrayList<>();
         for (int i = 0; i < numWolves; i++) {
-            double angle = Math.toRadians(90 * lastMove[wolf]);
-            int cos = (int) Math.cos(angle);
-            int sin = (int) Math.sin(angle);
+            //double angle = Math.toRadians(90 * lastMove[wolf]);
+            //int cos = (int) Math.cos(angle);
+            //int sin = (int) Math.sin(angle);
             int relX = wolfRow[wolf] - wolfRow[i]; //relative looking at north
             int relY = wolfCol[wolf] - wolfCol[i];
-            int x = (relX * cos) - (relY * sin); // transformed according to last move (orientation of the wolf)
-            int y = (relX * sin) + (relY * cos);
+            //int x = (relX * cos) - (relY * sin); // transformed according to last move (orientation of the wolf)
+            //int y = (relX * sin) + (relY * cos);
 
-            int[] agent = new int[]{i * 2 + 1, relX, relY};
-            agents.add(agent);
+            int[] agent = new int[]{relX, relY};
+            wolves.add(agent);
         }
-
+        return wolves;
+    }
+    public List<int[]> getWolfViewP(int wolf) {
+        List<int[]> preys = new ArrayList<>();
         for (int i = 0; i < numPreys; i++) {
             if (ManhattanDistance(wolfRow[wolf], wolfCol[wolf], preyRow[i], preyCol[i]) > visibility) {
                 continue;
             }
-            double angle = Math.toRadians(90 * (lastMove[wolf] - 1));
-            int cos = (int) Math.cos(angle);
-            int sin = (int) Math.sin(angle);
+            //double angle = Math.toRadians(90 * (lastMove[wolf] - 1));
+            //int cos = (int) Math.cos(angle);
+            //int sin = (int) Math.sin(angle);
             int relX = wolfRow[wolf] - preyRow[i]; //relative looking at north
             int relY = wolfCol[wolf] - preyCol[i];
-            int x = (relX * cos) - (relY * sin); // transformed according to last move (orientation of the wolf)
-            int y = (relX * sin) + (relY * cos);
-            int[] agent = new int[]{i * 2, relX, relY};
-            agents.add(agent);
+            //int x = (relX * cos) - (relY * sin); // transformed according to last move (orientation of the wolf)
+            //int y = (relX * sin) + (relY * cos);
+            int[] agent = new int[]{relX, relY};
+            preys.add(agent);
         }
 
-        return agents;
+        return preys;
+    }
+
+    public int[][] GetWolfGrid(List<int[]> wolves, List<int[]> preys) {
+        int[][] grid = new int[rows*2][cols*2];
+        grid[rows][cols] = -1;
+        for (int[] w: wolves) {
+            grid[rows+w[0]][cols+w[1]] = 1;
+        }
+        for (int[] p: preys) {
+            grid[rows+p[0]][cols+p[1]] = 2;
+        }
+        return grid;
     }
 }

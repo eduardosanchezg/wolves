@@ -8,7 +8,7 @@ import java.util.Random;
 public class RandomWolf implements Wolf {
 
 	@Override
-	public int[] moveAll(int id, List<int[]> sight) {
+	public int[] moveAll(int id, List<int[]> wolvesSight, List<int[]> preysSight) {
 		Random r = new Random();
 		int[] mymove = new int[2];
 		mymove[0] = r.nextInt(3)-1;
