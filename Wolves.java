@@ -266,9 +266,6 @@ public class Wolves {
     }
 
     public int[][] getWolfGrid(List<int[]> wolves, List<int[]> preys) {
-        // you can use this method to get a grid view centered around a wolf, based on its wolves and prey list
-        // its placed here just out of convenience you may want to move it to your wolf class
-
         int[][] grid = new int[rows*2][cols*2];
         grid[rows][cols] = -1;
 
