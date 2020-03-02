@@ -105,11 +105,8 @@ public class Wolves {
 
         }
 
+        // here we move the wolves
         int[][] safetyGrid;
-
-        // You can alter the allowances of the Wolves by commenting or un-commenting the code pieces below.
-
-        // Wolves can move diagonally
 		for (int i = 0; i<numWolves; i++) {
 			safetyGrid = new int[grid.length][grid[0].length];
 			for (int r=0; r<grid.length; r++)
@@ -233,7 +230,7 @@ public class Wolves {
         visuals = wolvesUI;
     }
 
-    public int ManhattanDistance(int x0, int y0, int x1, int y1) {
+    public int manhattanDistance(int x0, int y0, int x1, int y1) {
         return Math.abs(x1 - x0) + Math.abs(y1 - y0);
     }
 
@@ -256,16 +253,12 @@ public class Wolves {
     public List<int[]> getWolfViewP(int wolf) {
         List<int[]> preys = new ArrayList<>();
         for (int i = 0; i < numPreys; i++) {
-            if (ManhattanDistance(wolfRow[wolf], wolfCol[wolf], preyRow[i], preyCol[i]) > visibility) {
+            if (manhattanDistance(wolfRow[wolf], wolfCol[wolf], preyRow[i], preyCol[i]) > visibility) {
                 continue;
             }
-            //double angle = Math.toRadians(90 * (lastMove[wolf] - 1));
-            //int cos = (int) Math.cos(angle);
-            //int sin = (int) Math.sin(angle);
-            int relX = wolfRow[wolf] - preyRow[i]; //relative looking at north
+
+            int relX = wolfRow[wolf] - preyRow[i];
             int relY = wolfCol[wolf] - preyCol[i];
-            //int x = (relX * cos) - (relY * sin); // transformed according to last move (orientation of the wolf)
-            //int y = (relX * sin) + (relY * cos);
             int[] agent = new int[]{relX, relY};
             preys.add(agent);
         }
@@ -273,7 +266,7 @@ public class Wolves {
         return preys;
     }
 
-    public int[][] GetWolfGrid(List<int[]> wolves, List<int[]> preys) {
+    public int[][] getWolfGrid(List<int[]> wolves, List<int[]> preys) {
         int[][] grid = new int[rows*2][cols*2];
         grid[rows][cols] = -1;
         for (int[] w: wolves) {
