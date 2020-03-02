@@ -71,6 +71,7 @@ public class Wolves {
         wolvesPool[2] = new CleverWolf();
         wolvesPool[3] = new CleverWolf();
         wolvesPool[4] = new CleverWolf();
+
         // Below code will select three random wolves from the pool.
         // Make the pool as large as you want, but not < numWolves
         Set<Integer> generated = new LinkedHashSet<Integer>();
@@ -78,6 +79,7 @@ public class Wolves {
             Integer next = r.nextInt(wolvesPool.length);
             generated.add(next);
         }
+
         int i = 0;
         for (Integer index : generated) {
             wolves[i++] = wolvesPool[index];
@@ -104,7 +106,7 @@ public class Wolves {
         }
 
         // here we ask for the wolves moves; to change the movement style, change the limitMovement variable
-        boolean limitMovement = true;
+        boolean limitMovement = false;
 
         int[][] safetyGrid;
         if (!limitMovement) {
@@ -114,7 +116,7 @@ public class Wolves {
                 for (int r=0; r<grid.length; r++)
                     for (int s=0; s<grid[0].length; s++)
                         safetyGrid[r][s] = grid[r][s];
-                moves[i] = wolves[i].moveAll(i+1, getWolfViewW(i), getWolfViewP(i));
+                moves[i] = wolves[i].moveAll(getWolfViewW(i), getWolfViewP(i));
             }
         } else {
             // Wolves can not move diagonally
@@ -124,7 +126,7 @@ public class Wolves {
                     for (int s = 0; s < grid[0].length; s++)
                         safetyGrid[r][s] = grid[r][s];
 
-                int dir = wolves[i].moveLim(i + 1, getWolfViewW(i), getWolfViewP(i));
+                int dir = wolves[i].moveLim(getWolfViewW(i), getWolfViewP(i));
 
                 switch (dir) {
                     case 0:
@@ -153,7 +155,6 @@ public class Wolves {
                         break;
                 }
             }
-
         }
 
         // and here we move everybody
@@ -183,7 +184,6 @@ public class Wolves {
             System.exit(0);
         }
     }
-
 
     public boolean captured(int r, int c) {
         int count = 0;
@@ -266,6 +266,9 @@ public class Wolves {
     }
 
     public int[][] getWolfGrid(List<int[]> wolves, List<int[]> preys) {
+        // you can use this method to get a grid view centered around a wolf, based on its wolves and prey list
+        // its placed here just out of convenience you may want to move it to your wolf class
+
         int[][] grid = new int[rows*2][cols*2];
         grid[rows][cols] = -1;
 

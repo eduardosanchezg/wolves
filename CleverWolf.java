@@ -4,7 +4,7 @@ import java.util.*;
 public class CleverWolf implements Wolf {
 
     @Override
-    public int[] moveAll(int i, List<int[]> wolvesSight, List<int[]> preysSight) { //TODO: update method with new changes
+    public int[] moveAll(List<int[]> wolvesSight, List<int[]> preysSight) { //TODO: update method with new changes
 
         if (preysSight.size() == 0) {
 			// wander around
@@ -29,7 +29,6 @@ public class CleverWolf implements Wolf {
                     for (int[] wolf : wolvesSight) {
                         if (wolf[1] >= 0) {
                             if (field[0] == wolf[0] && field[1] == wolf[1]) {
-                                System.out.println("wolf " + i + " sees " + wolf[0] + " chase " + p[0] + " and joins!");
                                 target_prey_id = pid;
                                 break;
                             }
@@ -47,7 +46,7 @@ public class CleverWolf implements Wolf {
 	}
 
 	@Override
-    public int moveLim(int i, List<int[]> wolvesSight, List<int[]> preysSight) {
+    public int moveLim(List<int[]> wolvesSight, List<int[]> preysSight) {
         // does not work well, wolves to slow
 
         if (preysSight.size() == 0) {
@@ -73,7 +72,6 @@ public class CleverWolf implements Wolf {
                     for (int[] wolf : wolvesSight) {
                         if (wolf[1] >= 0) {
                             if (field[0] == wolf[0] && field[1] == wolf[1]) {
-                                System.out.println("wolf " + i + " sees " + wolf[0] + " chase " + p[0] + " and joins!");
                                 target_prey_id = pid;
                                 break;
                             }
