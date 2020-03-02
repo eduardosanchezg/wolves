@@ -16,7 +16,7 @@ public class RandomWolf implements Wolf {
 		return mymove;
 	}
 	
-	public int moveLim(int id, List<int[]> sight) {
+	public int moveLim(int id, List<int[]> wolvesSight, List<int[]> preysSight) {
 		Random r = new Random();
 		return r.nextInt(4) + 1;
 	}

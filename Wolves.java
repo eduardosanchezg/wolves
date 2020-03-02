@@ -15,7 +15,6 @@ public class Wolves {
     private int[] preyRow = new int[numPreys];
     private int[] preyCol = new int[numPreys];
     private Wolf[] wolves = new Wolf[numWolves];
-    private int[] lastMove = new int[numWolves];
     private List<Integer> capturedList = new ArrayList<>();
     private Random r = new Random();
     private WolvesUI visuals;
@@ -36,7 +35,6 @@ public class Wolves {
         preyRow = new int[numPreys];
         preyCol = new int[numPreys];
         wolves = new Wolf[numWolves];
-        lastMove = new int[numWolves];
 
         for (int i = 0; i < numWolves; i++) {
             do {
@@ -105,56 +103,60 @@ public class Wolves {
 
         }
 
-        // here we move the wolves
+        // here we ask for the wolves moves; to change the movement style, change the limitMovement variable
+        boolean limitMovement = true;
+
         int[][] safetyGrid;
-		for (int i = 0; i<numWolves; i++) {
-			safetyGrid = new int[grid.length][grid[0].length];
-			for (int r=0; r<grid.length; r++)
-				for (int s=0; s<grid[0].length; s++)
-					safetyGrid[r][s] = grid[r][s];
-			moves[i] = wolves[i].moveAll(i+1, getWolfViewW(i), getWolfViewP(i));
-		}
+        if (!limitMovement) {
+            // Wolves can move diagonally
+            for (int i = 0; i<numWolves; i++) {
+                safetyGrid = new int[grid.length][grid[0].length];
+                for (int r=0; r<grid.length; r++)
+                    for (int s=0; s<grid[0].length; s++)
+                        safetyGrid[r][s] = grid[r][s];
+                moves[i] = wolves[i].moveAll(i+1, getWolfViewW(i), getWolfViewP(i));
+            }
+        } else {
+            // Wolves can not move diagonally
+            for (int i = 0; i < numWolves; i++) {
+                safetyGrid = new int[grid.length][grid[0].length];
+                for (int r = 0; r < grid.length; r++)
+                    for (int s = 0; s < grid[0].length; s++)
+                        safetyGrid[r][s] = grid[r][s];
 
+                int dir = wolves[i].moveLim(i + 1, getWolfViewW(i), getWolfViewP(i));
 
-        // Wolves can not move diagonally
-//        for (int i = 0; i < numWolves; i++) {
-//            safetyGrid = new int[grid.length][grid[0].length];
-//            for (int r = 0; r < grid.length; r++)
-//                for (int s = 0; s < grid[0].length; s++)
-//                    safetyGrid[r][s] = grid[r][s];
-//
-//            int dir = wolves[i].moveLim(i + 1, getWolfView(i));
-//
-//            if (dir != 0) {
-//                dir = (dir - 1 + lastMove[i] - 1) % 4 + 1; //transform from relative to absolute directions}
-//                lastMove[i] = dir;
-//            }
-//            switch (dir) {
-//                case 0:
-//                    moves[i][0] = 0;
-//                    moves[i][1] = 0;
-//                    break;
-//                case 1:
-//                    moves[i][0] = -1;
-//                    moves[i][1] = 0;
-//                    break;
-//                case 2:
-//                    moves[i][0] = 0;
-//                    moves[i][1] = 1;
-//                    break;
-//                case 3:
-//                    moves[i][0] = 1;
-//                    moves[i][1] = 0;
-//                    break;
-//                case 4:
-//                    moves[i][0] = 0;
-//                    moves[i][1] = -1;
-//                    break;
-//            }
-//        }
+                switch (dir) {
+                    case 0:
+                        moves[i][0] = 0;
+                        moves[i][1] = 0;
+                        break;
+                    case 1:
+                        // up
+                        moves[i][0] = -1;
+                        moves[i][1] = 0;
+                        break;
+                    case 2:
+                        // right
+                        moves[i][0] = 0;
+                        moves[i][1] = 1;
+                        break;
+                    case 3:
+                        // down
+                        moves[i][0] = 1;
+                        moves[i][1] = 0;
+                        break;
+                    case 4:
+                        // left
+                        moves[i][0] = 0;
+                        moves[i][1] = -1;
+                        break;
+                }
+            }
 
-        // Till here!!!
+        }
 
+        // and here we move everybody
         for (int i = 0; i < numWolves; i++) {
             if (empty(rowWrap(wolfRow[i], moves[i][0]), colWrap(wolfCol[i], moves[i][1]))) {
                 grid[wolfRow[i]][wolfCol[i]] = 0;
@@ -237,19 +239,16 @@ public class Wolves {
     public List<int[]> getWolfViewW(int wolf) {
         List<int[]> wolves = new ArrayList<>();
         for (int i = 0; i < numWolves; i++) {
-            //double angle = Math.toRadians(90 * lastMove[wolf]);
-            //int cos = (int) Math.cos(angle);
-            //int sin = (int) Math.sin(angle);
-            int relX = wolfRow[wolf] - wolfRow[i]; //relative looking at north
+            int relX = wolfRow[wolf] - wolfRow[i];
             int relY = wolfCol[wolf] - wolfCol[i];
-            //int x = (relX * cos) - (relY * sin); // transformed according to last move (orientation of the wolf)
-            //int y = (relX * sin) + (relY * cos);
 
             int[] agent = new int[]{relX, relY};
             wolves.add(agent);
         }
+
         return wolves;
     }
+
     public List<int[]> getWolfViewP(int wolf) {
         List<int[]> preys = new ArrayList<>();
         for (int i = 0; i < numPreys; i++) {
@@ -269,12 +268,15 @@ public class Wolves {
     public int[][] getWolfGrid(List<int[]> wolves, List<int[]> preys) {
         int[][] grid = new int[rows*2][cols*2];
         grid[rows][cols] = -1;
+
         for (int[] w: wolves) {
             grid[rows+w[0]][cols+w[1]] = 1;
         }
+
         for (int[] p: preys) {
             grid[rows+p[0]][cols+p[1]] = 2;
         }
+
         return grid;
     }
 }
