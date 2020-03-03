@@ -116,7 +116,9 @@ public class Wolves {
                 for (int r=0; r<grid.length; r++)
                     for (int s=0; s<grid[0].length; s++)
                         safetyGrid[r][s] = grid[r][s];
-                moves[i] = wolves[i].moveAll(getWolfViewW(i), getWolfViewP(i));
+                List<int[]> wview = getWolfViewW(i);
+                List<int[]> pview = getWolfViewP(i);
+                moves[i] = wolves[i].moveAll(wview, pview,getWolfGrid(wview,pview));
             }
         } else {
             // Wolves can not move diagonally
@@ -125,8 +127,9 @@ public class Wolves {
                 for (int r = 0; r < grid.length; r++)
                     for (int s = 0; s < grid[0].length; s++)
                         safetyGrid[r][s] = grid[r][s];
-
-                int dir = wolves[i].moveLim(getWolfViewW(i), getWolfViewP(i));
+                List<int[]> wview = getWolfViewW(i);
+                List<int[]> pview = getWolfViewP(i);
+                int dir = wolves[i].moveLim(wview, pview,getWolfGrid(wview,pview));
 
                 switch (dir) {
                     case 0:
